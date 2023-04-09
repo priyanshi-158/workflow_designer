@@ -7,29 +7,35 @@ import ReactFlow, {
   Controls,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
+import useFetch from '../hooks/useFetch'
+import { useParams } from 'react-router-dom';
 
 import Sidebar from './Sidebar';
 
 import '../App.css';
 
-const initialNodes = [
-  {
-    id: '1',
-    type: 'input',
-    data: { label: 'input node' },
-    position: { x: 250, y: 5 },
-  },
-];
 
 let id = 0;
 const getId = () => `dndnode_${id++}`;
 
 const WorkflowDesigner = () => {
+  const { id } = useParams();
+  const { data, error, loading } = useFetch('https://64307b10d4518cfb0e50e555.mockapi.io/workflow/' + id)
+  const initialNodes = [
+    {
+      id: '1',
+      type: 'input',
+      data: { label: `input`
+     },
+      position: { x: 250, y: 5 },
+    },
+  ];
+  
   const reactFlowWrapper = useRef(null);
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
-
+ console.log(edges)
   const onConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), []);
 
   const onDragOver = useCallback((event) => {
@@ -43,7 +49,8 @@ const WorkflowDesigner = () => {
 
       const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
       const type = event.dataTransfer.getData('application/reactflow');
-
+      const name = event.dataTransfer.getData('name');
+      const input=event.dataTransfer.getData('input')
       // check if the dropped element is valid
       if (typeof type === 'undefined' || !type) {
         return;
@@ -57,7 +64,7 @@ const WorkflowDesigner = () => {
         id: getId(),
         type,
         position,
-        data: { label: `${type} node` },
+        data: { label: `${input} | ${name}` },
       };
 
       setNodes((nds) => nds.concat(newNode));
@@ -66,9 +73,10 @@ const WorkflowDesigner = () => {
   );
 
   return (
-    <div className="dndflow" style={{ height: 800 }}>
-      <ReactFlowProvider>
-        <div className="reactflow-wrapper" ref={reactFlowWrapper} width='100%' height='100%'>
+    <div className="dndflow" style={{ height: 750 }}>
+    {!loading && <ReactFlowProvider>
+        <Sidebar />
+        <div className="reactflow-wrapper border border-blue-400" ref={reactFlowWrapper} width='100%' height='100%'>
           <ReactFlow
             nodes={nodes}
             edges={edges}
@@ -83,8 +91,9 @@ const WorkflowDesigner = () => {
             <Controls />
           </ReactFlow>
         </div>
-        <Sidebar />
-      </ReactFlowProvider>
+
+      </ReactFlowProvider> }
+      
     </div>
   );
 };
