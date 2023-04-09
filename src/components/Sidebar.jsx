@@ -22,7 +22,7 @@ export default () => {
 
   return (
     <aside>
-      <div className="description">You can drag these nodes to the pane on the right.</div>
+      <div className="description m-2">You can drag these nodes to the pane on the right.</div>
       {data.map((data,i)=>(
         <div key={i} className="dndnode border border-blue-400" onDragStart={(event) => onDragStart(event, 'default',`${data.name}`,`${data.input_type.toUpperCase()}`)} draggable>
         <p className='border-r border-blue-400 p-2'>{data.input_type.toUpperCase()}</p>

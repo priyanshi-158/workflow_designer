@@ -74,7 +74,10 @@ const WorkflowDesigner = () => {
 
   return (
     <div className="dndflow" style={{ height: 750 }}>
-    {!loading && <ReactFlowProvider>
+    {!loading && <>
+    
+    <ReactFlowProvider>
+    <p className='top-0 absolute text-lg font-semibold'> Workflow Name:{data.name}</p>
         <Sidebar />
         <div className="reactflow-wrapper border border-blue-400" ref={reactFlowWrapper} width='100%' height='100%'>
           <ReactFlow
@@ -92,7 +95,7 @@ const WorkflowDesigner = () => {
           </ReactFlow>
         </div>
 
-      </ReactFlowProvider> }
+      </ReactFlowProvider> </>}
       
     </div>
   );
